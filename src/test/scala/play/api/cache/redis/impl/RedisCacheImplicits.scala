@@ -89,10 +89,15 @@ object RedisCacheImplicits {
 
   class MockedJavaRedis extends AbstractMocked {
     val expiration = 5.seconds
+    val expirationLong = expiration.toSeconds
+    val expirationInt = expirationLong.intValue
+    val classTag = "java.lang.String"
+    val classTagKey = s"classTag::$key"
+    val classTagOther = s"classTag::$other"
 
-    protected val environment = mock[Environment]
+    protected implicit val environment = mock[Environment]
     protected val async = mock[AsyncRedis]
-    protected val cache: play.cache.AsyncCacheApi = new AsyncJavaRedis(async, environment)
+    protected val cache: play.cache.redis.AsyncCacheApi = new AsyncJavaRedis(async)
 
     environment.classLoader returns getClass.getClassLoader
   }
